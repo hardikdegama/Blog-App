@@ -1,0 +1,163 @@
+/* Container and layout */
+
+.register-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #ffffff; /* white background */
+}
+
+.register-image {
+  flex: 1;
+  background-color: #0068fa; /* strong blue */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.side-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.75);
+}
+
+.register-form {
+  flex: 1;
+  background: #000000; /* solid black */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 40px;
+  box-sizing: border-box;
+  box-shadow: -4px 0 15px rgba(0, 71, 171, 0.3); /* blue shadow */
+  border-radius: 0 0 0 20px;
+}
+
+.register-form h2 {
+  margin-bottom: 40px;
+  color: #ffffff; /* white text */
+  font-weight: 700;
+  font-size: 2.5rem;
+  letter-spacing: 1px;
+}
+
+.register-form form {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Input styling */
+.register-form input {
+  margin-bottom: 25px;
+  padding: 15px 20px;
+  font-size: 1.1rem;
+  border: 2px solid #0047ab; /* blue border */
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+  color: #ffffff; /* white text */
+  background-color: #000000; /* black background */
+}
+
+/* Placeholder */
+.register-form input::placeholder {
+  color: #7aaaff; /* lighter blue placeholder */
+  font-weight: 500;
+}
+
+/* Focused input */
+.register-form input:focus {
+  border-color: #7aaaff; /* lighter blue */
+  box-shadow: 0 0 8px rgba(122, 170, 255, 0.7);
+  background: #001f4d; /* dark blue background on focus */
+  color: #ffffff; /* keep white text */
+}
+
+/* Input with data (not placeholder shown) */
+.register-form input:not(:placeholder-shown) {
+  border-color: #3399ff; /* medium blue */
+  background-color: #001f4d; /* dark blue background */
+  color: #ffffff; /* white text */
+}
+
+/* Submit button */
+.register-form button {
+  padding: 18px;
+  font-size: 1.2rem;
+  background: #0047ab; /* solid blue */
+  border: none;
+  color: #ffffff; /* white text */
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 6px 15px rgba(0, 71, 171, 0.5);
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.register-form button:hover {
+  background: #002f6c; /* darker blue on hover */
+  transform: translateY(-3px);
+}
+
+/* Message text */
+.message {
+  margin-top: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #3399ff; /* medium blue */
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .register-container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  /* Show image on top with full width and height */
+  .register-image {
+    display: flex;
+    width: 100%;
+    height: 40vh;
+    max-height: 300px;
+  }
+
+  .side-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* show entire image without cropping */
+    filter: brightness(0.75);
+  }
+
+  .register-form {
+    flex: none;
+    width: 100%;
+    padding: 40px 20px;
+    border-radius: 0;
+    box-shadow: none;
+    height: auto;
+  }
+
+  .register-form h2 {
+    font-size: 2rem;
+    margin-bottom: 30px;
+  }
+
+  .register-form button {
+    padding: 15px;
+    font-size: 1.1rem;
+  }
+}
