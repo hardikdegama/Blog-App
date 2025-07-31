@@ -10,8 +10,7 @@ router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   try {
     const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: "Email already exists" });
+    if (existingUser) return res.status(400).json({ message: "Email already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = new User({ name, email, password: hashedPassword });
@@ -29,12 +28,10 @@ router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (!user)
-      return res.status(401).json({ message: "You are not a registered user." });
+    if (!user) return res.status(401).json({ message: "You are not a registered user." });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Incorrect password." });
+    if (!isMatch) return res.status(401).json({ message: "Incorrect password." });
 
     res.status(200).json({ message: "Login successful!" });
   } catch (err) {
@@ -68,37 +65,46 @@ router.post("/send-otp", async (req, res) => {
   }
 });
 
-// Verify OTP and reset password
-// Verify OTP and reset password
+// Verify OTP (for step 2)
+router.post("/verify-otp", async (req, res) => {
+  const { email, otp } = req.body;
+
+  try {
+    const record = await OTP.findOne({ email });
+    if (!record) return res.status(400).json({ valid: false, message: "OTP not found. Please request a new OTP." });
+
+    if (otp.trim() !== record.otp) return res.status(400).json({ valid: false, message: "Invalid OTP. Please enter the correct OTP." });
+
+    if (record.expiresAt < new Date()) return res.status(400).json({ valid: false, message: "OTP has expired. Please request a new OTP." });
+
+    res.json({ valid: true, message: "OTP verified successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ valid: false, message: "Server error verifying OTP." });
+  }
+});
+
+// Verify OTP and reset password (step 3)
 router.post("/verify-otp-reset", async (req, res) => {
   const { email, otp, newPassword } = req.body;
 
   try {
     const record = await OTP.findOne({ email });
+    if (!record) return res.status(400).json({ message: "OTP not found. Please request a new OTP." });
 
-    if (!record) {
-      return res.status(400).json({ message: "OTP not found. Please request a new OTP." });
-    }
+    if (otp.trim() !== record.otp) return res.status(400).json({ message: "Invalid OTP. Please enter the correct OTP." });
 
-    // ✅ Check OTP match
-    if (otp.trim() !== record.otp) {
-      return res.status(400).json({ message: "Invalid OTP. Please enter the correct OTP." });
-    }
+    if (record.expiresAt < new Date()) return res.status(400).json({ message: "OTP has expired. Please request a new OTP." });
 
-    // ✅ Check expiry
-    if (record.expiresAt < new Date()) {
-      return res.status(400).json({ message: "OTP has expired. Please request a new OTP." });
-    }
-
-    // ✅ Hash and update password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await User.updateOne({ email }, { password: hashedPassword });
     await OTP.deleteOne({ email });
 
-    return res.json({ message: "Password updated successfully" });
-
+    res.json({ message: "Password updated successfully" });
   } catch (err) {
-    console.error("Error in /verify-otp-reset:", err);
-    return res.status(500).json({ message: "Error updating password" });
+    console.error(err);
+    res.status(500).json({ message: "Error updating password" });
   }
 });
+
+module.exports = router;

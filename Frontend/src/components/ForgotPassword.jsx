@@ -3,7 +3,7 @@ import axios from "axios";
 import "./ForgotPassword.css";
 
 const ForgotPassword = () => {
-  const [step, setStep] = useState(1); // 1=email, 2=enter otp, 3=new password
+  const [step, setStep] = useState(1); // 1=email, 2=otp, 3=new password
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -34,7 +34,6 @@ const ForgotPassword = () => {
     }
 
     try {
-      // Call backend to verify OTP validity
       const res = await axios.post("http://localhost:5000/api/verify-otp", { email, otp });
       if (res.data.valid) {
         setMessage("OTP verified successfully.");
@@ -80,58 +79,70 @@ const ForgotPassword = () => {
 
   return (
     <div className="forgot-container">
-      <h2>Forgot Password</h2>
+      {/* Side image */}
+      <div className="forgot-image">
+        <img
+          src="/public/forgotpassword.jpg"
+          alt="Side Illustration"
+          className="side-image"
+        />
+      </div>
 
-      {step === 1 && (
-        <form onSubmit={sendOtp}>
-          <input
-            type="email"
-            placeholder="Enter your registered email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <button type="submit">Send OTP</button>
-        </form>
-      )}
+      {/* Form section */}
+      <div className="forgot-form">
+        <h2>Forgot Password</h2>
 
-      {step === 2 && (
-        <form onSubmit={verifyOtp}>
-          <input
-            type="text"
-            placeholder="Enter OTP"
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
-            maxLength={6}
-            required
-          />
-          <button type="submit">Verify OTP</button>
-        </form>
-      )}
+        {step === 1 && (
+          <form onSubmit={sendOtp}>
+            <input
+              type="email"
+              placeholder="Enter your registered email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <button type="submit">Send OTP</button>
+          </form>
+        )}
 
-      {step === 3 && (
-        <form onSubmit={resetPassword}>
-          <input
-            type="password"
-            placeholder="Enter New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            minLength={6}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            minLength={6}
-            required
-          />
-          <button type="submit">Reset Password</button>
-        </form>
-      )}
+        {step === 2 && (
+          <form onSubmit={verifyOtp}>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              maxLength={6}
+              required
+            />
+            <button type="submit">Verify OTP</button>
+          </form>
+        )}
 
-      {message && <p className="message">{message}</p>}
+        {step === 3 && (
+          <form onSubmit={resetPassword}>
+            <input
+              type="password"
+              placeholder="Enter New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              minLength={6}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Confirm New Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              minLength={6}
+              required
+            />
+            <button type="submit">Reset Password</button>
+          </form>
+        )}
+
+        {message && <p className="message">{message}</p>}
+      </div>
     </div>
   );
 };
